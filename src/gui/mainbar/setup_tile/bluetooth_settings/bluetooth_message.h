@@ -23,16 +23,19 @@
     #define _BLUETOOTH_MESSAGE_H
 
     #include <TTGO.h>
+    #include "hardware/msg_chain.h"
 
     struct src_icon_t {
         const char src_name[ 24 ];
         const int32_t vibe;
         const lv_img_dsc_t *img;
     };
+    extern msg_chain_t *bluetooth_msg_chain;
 
     void bluetooth_message_tile_setup( void );
     void bluetooth_message_disable( void );
     void bluetooth_message_enable( void );
     bool bluetooth_message_queue_msg( const char *msg );
+    bool bluetooth_delete_msg_from_chain( int32_t entry );
 
 #endif // _BLUETOOTH_MESSAGE_H

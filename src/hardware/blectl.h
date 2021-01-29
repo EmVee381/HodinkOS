@@ -21,9 +21,11 @@
  */
 #ifndef _BLECTL_H
     #define _BLECTL_H
-
+    #include "esp32notifications.h"
     #include "TTGO.h"
     #include "callback.h"
+#include "../gui/mainbar/setup_tile/bluetooth_settings/bluetooth_message.h"
+
 
     #define BLECTL_CONNECT               _BV(0)         /** @brief event mask for blectl connect to an client */
     #define BLECTL_DISCONNECT            _BV(1)         /** @brief event mask for blectl disconnect */
@@ -39,51 +41,10 @@
     #define BLECTL_MSG_SEND_SUCCESS      _BV(11)        /** @brief event mask msg send success */
     #define BLECTL_MSG_SEND_ABORT        _BV(12)        /** @brief event mask msg send abort */
 
-
-    // See the following for generating UUIDs:
-    // https://www.uuidgenerator.net/
-    #define SERVICE_UUID                                    BLEUUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")     /** @brief UART service UUID */
-    #define CHARACTERISTIC_UUID_RX                          BLEUUID("6E400002-B5A3-F393-E0A9-E50E24DCCA9E")
-    #define CHARACTERISTIC_UUID_TX                          BLEUUID("6E400003-B5A3-F393-E0A9-E50E24DCCA9E")
-
-    #define DEVICE_INFORMATION_SERVICE_UUID                 BLEUUID((uint16_t)0x180A)                           /** @brief Device Information server UUID */
-    #define MANUFACTURER_NAME_STRING_CHARACTERISTIC_UUID    BLEUUID((uint16_t)0x2A29)                           /** @brief Device Information - manufacturer name string UUID */
-    #define FIRMWARE_REVISION_STRING_CHARACTERISTIC_UUID    BLEUUID((uint16_t)0x2A26)                           /** @brief Device Information - firmware revision UUID */
-
-    #define BATTERY_SERVICE_UUID                            BLEUUID((uint16_t)0x180F)                           /** @brief Battery service UUID */
-    #define BATTERY_LEVEL_CHARACTERISTIC_UUID               BLEUUID((uint16_t)0x2A19)                           /** @brief battery level characteristic UUID */
-    #define BATTERY_LEVEL_DESCRIPTOR_UUID                   BLEUUID((uint16_t)0x2901)                           /** @brief battery level descriptor UUID */
-    #define BATTERY_POWER_STATE_CHARACTERISTIC_UUID         BLEUUID((uint16_t)0x2A1A)                           /** @brief battery power state characteristic UUID */
-
-    #define BATTERY_POWER_STATE_BATTERY_UNKNOWN             0x0
-    #define BATTERY_POWER_STATE_BATTERY_NOT_SUPPORTED       0x1
-    #define BATTERY_POWER_STATE_BATTERY_NOT_PRESENT         0x2
-    #define BATTERY_POWER_STATE_BATTERY_PRESENT             0x3
-
-    #define BATTERY_POWER_STATE_DISCHARGE_UNKNOWN           0x0
-    #define BATTERY_POWER_STATE_DISCHARGE_NOT_SUPPORTED     0x4
-    #define BATTERY_POWER_STATE_DISCHARGE_NOT_DISCHARING    0x8
-    #define BATTERY_POWER_STATE_DISCHARGE_DISCHARING        0xc
-
-    #define BATTERY_POWER_STATE_CHARGE_UNKNOWN              0x0
-    #define BATTERY_POWER_STATE_CHARGE_NOT_CHARGEABLE       0x10
-    #define BATTERY_POWER_STATE_CHARGE_NOT_CHARING          0x20
-    #define BATTERY_POWER_STATE_CHARGE_CHARING              0x30
-
-    #define BATTERY_POWER_STATE_LEVEL_UNKNOWN               0x0
-    #define BATTERY_POWER_STATE_LEVEL_NOT_SUPPORTED         0x40
-    #define BATTERY_POWER_STATE_LEVEL_GOOD                  0x80
-    #define BATTERY_POWER_STATE_LEVEL_CRITICALLY_LOW        0xC0
-
     #define BLECTL_JSON_COFIG_FILE         "/blectl.json"   /** @brief defines json config file name */
 
-    #define EndofText               0x03
-    #define LineFeed                0x0a
-    #define DataLinkEscape          0x10
 
-    #define BLECTL_CHUNKSIZE        20      /** @brief chunksize for send msg */
-    #define BLECTL_CHUNKDELAY       20      /** @brief chunk delay in ms for each msg chunk */
-    #define BLECTL_MSG_MTU          512     /** @brief max msg size */
+
 
     /**
      * @brief blectl config structure
@@ -94,8 +55,7 @@
         bool enable_on_standby = false; /** @brief enable on standby on/off */
         int32_t txpower = 1;            /** @brief tx power, valide values are from 0 to 4 */
     } blectl_config_t;
-
-    /**
+  /**
      * @brief blectl send msg structure
      */
     typedef struct {
@@ -105,11 +65,12 @@
         int32_t msgpos;                 /** @brief msg postition for next send */
     } blectl_msg_t;
 
+
     /**
      * @brief ble setup function
      */
     void blectl_setup( void );
-    /**
+   /**
      * @brief trigger a blectl managemt event
      * 
      * @param   bits    event to trigger
@@ -145,6 +106,52 @@
      * @param   id                  pointer to an string
      */
     bool blectl_register_cb( EventBits_t event, CALLBACK_FUNC callback_func, const char *id );
+ 
+
+
+
+    void onBLEStateChanged(BLENotifications::State state);
+    void onNotificationArrived(const ArduinoNotification * notification, const Notification * rawNotificationData);
+    void onNotificationRemoved(const ArduinoNotification * notification, const Notification * rawNotificationData);
+ 
+//origosh
+ 
+     /**
+     * @brief send an message over bluettoth to gadgetbridge
+     * 
+     * @param   msg     pointer to a string
+     */
+    void blectl_send_msg( char *msg );
+ 
+ void blectl_set_txpower( int32_t txpower );
+    /**
+     * @brief get the current transmission power
+     * 
+     * @return  power from 0..4, from -12db to 0db in 3db steps
+     */
+    int32_t blectl_get_txpower( void );
+    /**
+     * @brief enable the bluettoth stack
+     */
+    void blectl_on( void );
+    /**
+     * @brief disable the bluetooth stack
+     */
+    void blectl_off( void );
+    /**
+     * @brief get the current enable config
+     * 
+     * @return true if bl enabled, false if bl disabled
+     */
+    bool blectl_get_autoon( void );
+    /**
+     * @brief set the current bl enable config
+     * 
+     * @param enable    true if enabled, false if disable
+     */
+    void blectl_set_autoon( bool autoon );
+
+ bool blectl_register_cb( EventBits_t event, CALLBACK_FUNC callback_func, const char *id );
     /**
      * @brief enable blueetooth on standby
      * 
@@ -177,51 +184,6 @@
      * @brief read the configuration from SPIFFS
      */
     void blectl_read_config( void );
-    /**
-     * @brief send an battery update over bluetooth to gadgetbridge
-     * 
-     * @param   percent     battery percent
-     * @param   charging    charging state
-     * @param   plug        powerplug state
-     */
-    void blectl_update_battery( int32_t percent, bool charging, bool plug );
-    /**
-     * @brief send an message over bluettoth to gadgetbridge
-     * 
-     * @param   msg     pointer to a string
-     */
-    void blectl_send_msg( char *msg );
-    /**
-     * @brief set the transmission power
-     * 
-     * @param   txpower power from 0..4, from -12db to 0db in 3db steps
-     */
-    void blectl_set_txpower( int32_t txpower );
-    /**
-     * @brief get the current transmission power
-     * 
-     * @return  power from 0..4, from -12db to 0db in 3db steps
-     */
-    int32_t blectl_get_txpower( void );
-    /**
-     * @brief enable the bluettoth stack
-     */
-    void blectl_on( void );
-    /**
-     * @brief disable the bluetooth stack
-     */
-    void blectl_off( void );
-    /**
-     * @brief get the current enable config
-     * 
-     * @return true if bl enabled, false if bl disabled
-     */
-    bool blectl_get_autoon( void );
-    /**
-     * @brief set the current bl enable config
-     * 
-     * @param enable    true if enabled, false if disable
-     */
-    void blectl_set_autoon( bool autoon );
+
 
 #endif // _BLECTL_H
