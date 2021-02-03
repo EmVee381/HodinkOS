@@ -140,9 +140,9 @@ void onBLEStateChanged(BLENotifications::State state) {
 //                         not beginner-friendly. For advanced use-cases.
 void onNotificationArrived(const ArduinoNotification * notification, const Notification * rawNotificationData) {
     Serial.println("Got notification: ");
-    Serial.println(notification->time);  // 
+    Serial.println(ctime(&notification->time));  // 
     
-    Serial.println(notification->uuid);  // Which app sent it
+    Serial.println(notification->uuid); 
     Serial.println(notification->title); // The title, ie name of who sent the message
     Serial.println(notification->message); // The detail, ie "be home for dinner at 7".
     Serial.println(notification->type);  // Which app sent it

@@ -244,6 +244,7 @@ static void bluetooth_del_message_event_cb( lv_obj_t * obj, lv_event_t event ) {
     switch( event ) {
         case( LV_EVENT_CLICKED ):
             if ( msg_chain_get_entrys( bluetooth_msg_chain ) == 1 ) {
+
                 msg_chain_delete_msg_entry( bluetooth_msg_chain, bluetooth_current_msg );
                 bluetooth_current_msg--;
                 app_hide_indicator( messages_app );
@@ -329,9 +330,7 @@ bool bluetooth_message_queue_msg( const char *msg ) {
     }
     else {
         if( !strcmp( doc["t"], "notify" ) ) {
-                        log_i("uuid: %c",doc["t"]);
-
-           if (msg_chain_get_msg_entry(bluetooth_msg_chain, doc["id"]))
+           if (msg_chain_get_msg_entry(bluetooth_msg_chain,0, (doc["id"].as<int32_t>())))
                return(false);
             bluetooth_msg_chain = msg_chain_add_msg( bluetooth_msg_chain, msg );
             powermgm_set_event( POWERMGM_WAKEUP_REQUEST );
@@ -451,7 +450,7 @@ void bluetooth_message_show_msg( int32_t entry ) {
 
 bool bluetooth_delete_msg_from_chain( int32_t entry )
 {
- msg_chain_delete_msg_entry( bluetooth_msg_chain, entry );
+ msg_chain_delete_msg_entry( bluetooth_msg_chain, 0,entry );
 
 
 }
