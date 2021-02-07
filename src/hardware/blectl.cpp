@@ -113,7 +113,7 @@ void onBLEStateChanged(BLENotifications::State state) {
         blectl_set_event( BLECTL_CONNECT );
         blectl_clear_event( BLECTL_DISCONNECT );
         blectl_send_event_cb( BLECTL_CONNECT, (void *)"connected" );
-        blectl_msg_chain = msg_chain_delete( blectl_msg_chain );
+       // blectl_msg_chain = msg_chain_delete( blectl_msg_chain );
         log_i("BLE connected");
           break;
 
@@ -121,7 +121,7 @@ void onBLEStateChanged(BLENotifications::State state) {
          blectl_set_event( BLECTL_DISCONNECT );
         blectl_clear_event( BLECTL_CONNECT );
         blectl_send_event_cb( BLECTL_DISCONNECT, (void *)"disconnected" );
-        blectl_msg_chain = msg_chain_delete( blectl_msg_chain );
+       // blectl_msg_chain = msg_chain_delete( blectl_msg_chain );
         blectl_msg.active = false;
         log_i("BLE disconnected");
         if ( blectl_get_advertising() ) {
