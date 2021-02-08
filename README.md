@@ -7,7 +7,7 @@
 </p>
 <hr/>
 
-# My-TTGO-Watch
+# My-TTGO-Watch ANCS Apple notification center version
 
 A smartwatch based on ESP32 from LilyGo. Currently under development.
 
