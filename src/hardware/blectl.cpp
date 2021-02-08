@@ -207,6 +207,9 @@ bool blectl_get_enable_on_standby( void ) {
     return( blectl_config.enable_on_standby );
 }
 
+bool blectl_get_show_notification( void ) {
+    return( blectl_config.show_notification );
+}
 bool blectl_get_autoon( void ) {
     return( blectl_config.autoon );
 }
@@ -228,6 +231,8 @@ void blectl_save_config( void ) {
         doc["advertising"] = blectl_config.advertising;
         doc["enable_on_standby"] = blectl_config.enable_on_standby;
         doc["tx_power"] = blectl_config.txpower;
+        doc["show_notification"] = blectl_config.show_notification;
+
         log_e("Save to file: %s!", BLECTL_JSON_COFIG_FILE );
 
         if ( serializeJsonPretty( doc, file ) == 0) {
@@ -260,6 +265,8 @@ void blectl_read_config( void ) {
             blectl_config.advertising = doc["advertising"] | true;
             blectl_config.enable_on_standby = doc["enable_on_standby"] | true;
             blectl_config.txpower = doc["tx_power"] | 1;
+            blectl_config.show_notification = doc["show_notification"] | true;
+
         }        
         doc.clear();
     }
@@ -335,6 +342,10 @@ void blectl_set_txpower( int32_t txpower ) {
         default:            BLEDevice::setPower( ESP_PWR_LVL_N9 );
                             break;
     }
+    blectl_save_config();
+}
+void blectl_set_show_notification( bool show_notification ) {        
+    blectl_config.show_notification = show_notification;
     blectl_save_config();
 }
 void blectl_set_advertising( bool advertising ) {  
