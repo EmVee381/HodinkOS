@@ -42,7 +42,7 @@
     #define NORMALVOLTAGE                   3300                /** @brief defines the norminal voltages while working */
     #define NORMALPOWERSAVEVOLTAGE          3000                /** @brief defines the norminal voltages while in powersave */
     #define EXPERIMENTALNORMALVOLTAGE       3000                /** @brief defines the norminal voltages while working with exprimental powersave enabled */
-    #define EXPERIMENTALPOWERSAVEVOLTAGE    2700                /** @brief defines the norminal voltages while in powersave with exprimental powersave enabled */
+    #define EXPERIMENTALPOWERSAVEVOLTAGE    2800                /** @brief defines the norminal voltages while in powersave with exprimental powersave enabled */
 	/** 
      * pmu file name
      */
@@ -205,5 +205,9 @@
      * @return  true if success, false if failed
      */
     bool pmu_register_cb( EventBits_t event, CALLBACK_FUNC callback_func, const char *id );
+    /**
+     *  @brief  set normal voltage (3.3V) for update/flashing
+     */
+    void pmu_set_safe_voltage_for_update( void );
 
 #endif // _PMU_H

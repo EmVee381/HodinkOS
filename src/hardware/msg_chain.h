@@ -59,7 +59,7 @@
      * 
      * @return  true if success, false if failed
      */
-    bool msg_chain_delete_msg_entry( msg_chain_t *msg_chain, int32_t entry );
+    bool msg_chain_delete_msg_entry( msg_chain_t *msg_chain, int32_t entry,int32_t id=-1  );
     /**
      * @brief get an messges timestamp entry from the msg_chain
      * 
@@ -77,7 +77,7 @@
      * 
      * @return  pointer to the messages of NULL if failed
      */
-    const char* msg_chain_get_msg_entry( msg_chain_t *msg_chain, int32_t entry );
+    const char* msg_chain_get_msg_entry( msg_chain_t *msg_chain, int32_t entry,int32_t id=-1 );
     /**
      * @brief get the number of entry in the msg_chain
      * 

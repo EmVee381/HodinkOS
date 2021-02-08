@@ -36,12 +36,12 @@
     /*
     * Enable non-latin languages support:
     */
-    #define USE_EXTENDED_CHARSET CHARSET_CYRILLIC
+    #define USE_EXTENDED_CHARSET CHARSET_LATIN2
 
     /*
     * firmeware version string
     */
-    #define __FIRMWARE__            "2021012701"
+    #define __FIRMWARE__            "2021020502"
 
     #ifdef __cplusplus // Allows to include config.h from C code
         #include <LilyGoWatch.h>
